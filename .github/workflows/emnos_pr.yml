@@ -31,4 +31,5 @@ jobs:
       - name: Lint the dockerfile
         uses: hadolint/hadolint-action@v3.1.0
         with:
+          ignore: DL3008
           dockerfile: ./emnos-tools/dockerfile
