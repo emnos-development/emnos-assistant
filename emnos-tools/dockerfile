@@ -1,0 +1,26 @@
+FROM python:3.11.13-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl git build-essential zlib1g-dev libbz2-dev \
+    libncurses5-dev libncursesw5-dev libffi-dev \
+    libreadline-dev libssl-dev libsqlite3-dev lzma liblzma-dev \
+    && rm -rf /var/lib/apt/lists/* \
+    && mkdir -p /opt/emnosapp/private-gpt \
+    && addgroup --system emnos \
+    && adduser --system --ingroup emnos emnos \
+    && mkdir -p /home/emnos /opt/emnosapp/private-gpt \
+    && chown -R emnos:emnos /home/emnos /opt/emnosapp/private-gpt
+
+USER emnos
+ENV HOME=/home/emnos
+ENV PATH="$HOME/.local/bin:$PATH"
+WORKDIR /opt/emnosapp/private-gpt
+
+RUN curl -sSL https://install.python-poetry.org | python3 -
+COPY --chown=emnos:emnos pyproject.toml poetry.lock* ./
+
+RUN poetry install --extras "llms-gemini embeddings-gemini" --no-root --no-interaction --no-ansi
+COPY --chown=emnos:emnos . /opt/emnosapp/private-gpt
+
+EXPOSE 8080
+ENTRYPOINT ["bash", "-c", "make wipe && make ingest ./local_data/private_gpt/source_documents/kow/  && PGPT_PROFILES=gemini make run"]
