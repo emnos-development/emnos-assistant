@@ -18,6 +18,7 @@ jobs:
     steps:
       - name: Check out source code
         uses: actions/checkout@v5
+      
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -43,19 +44,23 @@ jobs:
 
   build-and-push-container:
     name: Build and push container
+    runs-on: ubuntu-latest
     needs:
       - prepare-files
-    uses: emnos-operations/reusable-workflows/.github/workflows/build-container.yml@v1.0.60
-    with:
-      dockerfile-name: ./emnos-tools/dockerfile
-      registry-location: ${{ vars.GOOGLE_LOCATION }}
-      registry-project: ${{ vars.CONTAINER_PROJECT }}
-      registry-repository: ${{ vars.CONTAINER_PORTAL_REPOSITORY }}
-      image-name: ${{ github.event.repository.name }}
-      image-tag: SNAPSHOT-v${{ needs.export-container-variables.outputs.VERSION }}-${{ github.RUN_NUMBER }}
-      push-image: true
-    secrets:
-      GOOGLE_CREDENTIALS: ${{ secrets.BUILD_GOOGLE_CREDENTIALS }}
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@v5
+      - name: Build and push container
+        id: build-image
+        uses: mr-smithers-excellent/docker-build-push@v6
+        with:
+          image: ${{ vars.CONTAINER_PROJECT }}/${{ vars.CONTAINER_PORTAL_REPOSITORY }}/${{ github.event.repository.name }}
+          dockerfile: ./emnos-tools/dockerfile
+          tags: SNAPSHOT-v-${{ github.RUN_NUMBER }}
+          registry: ${{ vars.GOOGLE_LOCATION }}-docker.pkg.dev
+          username: _json_key
+          password: ${{ secrets.BUILD_GOOGLE_CREDENTIALS }}
+          pushImage: true
 
   # Deploy Container to DEV
   deploy-to-cloud-run:
@@ -97,7 +102,7 @@ jobs:
 
           echo "##### CONTAINER variables export"
           export IMAGE_NAME=${{ vars.SERVICE_NAME }}
-          export IMAGE_TAG=SNAPSHOT-v${{ needs.export-container-variables.outputs.VERSION }}-${{ github.RUN_NUMBER }}
+          export IMAGE_TAG=SNAPSHOT-v-${{ github.RUN_NUMBER }}
           echo "##### SERVICE variables export"
           export LABEL_CUSTOMER=${{ fromJson(env.ENVIRONMENT_CONFIG).LABEL_CUSTOMER }}
           export LABEL_ENVIRONMENT=${{ fromJson(env.ENVIRONMENT_CONFIG).LABEL_ENVIRONMENT }}
