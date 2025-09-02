@@ -1,0 +1,142 @@
+name: SNAPSHOT build for Emnos Assistant (emnos-assistant)
+
+concurrency:
+  group: development
+  cancel-in-progress: true
+
+on:
+  push:
+    branches:
+      - development
+  workflow_dispatch:
+
+jobs:
+  # Prepare files from Knowledge Owl
+  prepare-files:
+    name: Prepare files
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@v5
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install beautifulsoup4
+
+      - name: Get the json files from Knowledge Owl
+        run: |
+          curl -u ${{ vars.KO_API_KEY }}:X \      
+          "https://app.knowledgeowl.com/api/head/article.json" \    
+          -o kow_articles.json
+
+          curl -u ${{ vars.KO_API_KEY }}:X \
+          "https://app.knowledgeowl.com/api/head/glossaryterm.json" \
+          -o kow_glossaryterm.json
+
+      - name: prepare md files
+        run: |
+          python3 ./emnos-tools/json_to_md.py --input kow_articles.json ./local_data/private_gpt/source_documents/kow
+          python3 ./emnos-tools/json_to_md.py --input kow_glossaryterm.json ./local_data/private_gpt/source_documents/kow
+
+  build-and-push-container:
+    name: Build and push container
+    needs:
+      - prepare-files
+    uses: emnos-operations/reusable-workflows/.github/workflows/build-container.yml@v1.0.60
+    with:
+      dockerfile-name: ./emnos-tools/dockerfile
+      registry-location: ${{ vars.GOOGLE_LOCATION }}
+      registry-project: ${{ vars.CONTAINER_PROJECT }}
+      registry-repository: ${{ vars.CONTAINER_PORTAL_REPOSITORY }}
+      image-name: ${{ github.event.repository.name }}
+      image-tag: SNAPSHOT-v${{ needs.export-container-variables.outputs.VERSION }}-${{ github.RUN_NUMBER }}
+      push-image: true
+    secrets:
+      GOOGLE_CREDENTIALS: ${{ secrets.BUILD_GOOGLE_CREDENTIALS }}
+
+  # Deploy Container to DEV
+  deploy-to-cloud-run:
+    name: Deploy to Cloud Run
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        INDUSTRY: [FOOD]
+        ENVIRONMENT: [DEV]
+        CUSTOMER: [-PDOPT]
+        include:
+          - INDUSTRY: SPORT
+            ENVIRONMENT: DEV
+    environment: ${{ matrix.INDUSTRY }}-${{ matrix.ENVIRONMENT }}${{ matrix.CUSTOMER }}
+    env:
+      ENVIRONMENT_CONFIG: ${{ vars.ENVIRONMENT_CONFIG }}
+    needs:
+      - build-and-push-container
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@v5
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.DEPLOY_GOOGLE_CREDENTIALS }}'
+
+      - name: Create Service declaration
+        run: |-
+          echo "##### APP variables export"
+          export APP_PORT=${{ vars.APP_PORT }}
+          export GOOGLE_PROJECT=${{ fromJson(env.ENVIRONMENT_CONFIG).GOOGLE_PROJECT }}
+          export GOOGLE_LOCATION=${{ vars.GOOGLE_LOCATION }}
+          export KEYS_PROJECT=${{ vars.KEYS_PROJECT}}
+          export PGPT_PROFILES=${{ vars.PGPT_PROFILES }}
+          export GPT_GEMINI_KEY=${{ secrets.GPT_GEMINI_KEY }}
+          export KO_API_KEY=${{ secrets.KO_API_KEY }}
+
+          echo "##### CONTAINER variables export"
+          export IMAGE_NAME=${{ vars.SERVICE_NAME }}
+          export IMAGE_TAG=SNAPSHOT-v${{ needs.export-container-variables.outputs.VERSION }}-${{ github.RUN_NUMBER }}
+          echo "##### SERVICE variables export"
+          export LABEL_CUSTOMER=${{ fromJson(env.ENVIRONMENT_CONFIG).LABEL_CUSTOMER }}
+          export LABEL_ENVIRONMENT=${{ fromJson(env.ENVIRONMENT_CONFIG).LABEL_ENVIRONMENT }}
+          export LABEL_OWNER=${{ fromJson(env.ENVIRONMENT_CONFIG).LABEL_OWNER }}
+          export LABEL_INDUSTRY=${{ fromJson(env.ENVIRONMENT_CONFIG).LABEL_INDUSTRY }}
+          export LABEL_APPLICATION=${{ fromJson(env.ENVIRONMENT_CONFIG).LABEL_APPLICATION }}
+          export SERVICE_ACCOUNT_NAME=${{ vars.SERVICE_NAME }}-service
+          export SERVICE_NAME=${{ vars.SERVICE_NAME }}
+          export MIN_INSTANCES=${{ fromJson(env.ENVIRONMENT_CONFIG).MIN_INSTANCES }}
+          export MAX_INSTANCES=${{ fromJson(env.ENVIRONMENT_CONFIG).MAX_INSTANCES }}    
+          envsubst < ./emnos-tools/service-template.yml > container.yaml
+          cat container.yaml
+
+      - name: Get previous revision (Blue)
+        id: get-blue
+        run: |
+          BLUE_REVISION=$(gcloud run services describe ${{ vars.SERVICE_NAME }} --region ${{ vars.GOOGLE_LOCATION }} --project ${{ fromJson(env.ENVIRONMENT_CONFIG).GOOGLE_PROJECT }} --format 'value(status.traffic[0].revisionName)')
+          echo "BLUE_REVISION=$BLUE_REVISION" >> $GITHUB_ENV
+
+      - name: Deploy new revision (Green)
+        id: deploy-green
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          project_id: ${{ fromJson(env.ENVIRONMENT_CONFIG).GOOGLE_PROJECT }}
+          service: ${{ vars.SERVICE_NAME }}
+          region: ${{ vars.GOOGLE_LOCATION }}
+          metadata: container.yaml
+          no_traffic: true
+
+      - name: Get new revision (Green)
+        id: get-green
+        run: |
+          GREEN_REVISION=$(gcloud run services describe ${{ vars.SERVICE_NAME }} --region ${{ vars.GOOGLE_LOCATION }} --project ${{ fromJson(env.ENVIRONMENT_CONFIG).GOOGLE_PROJECT }} --format 'value(status.latestCreatedRevisionName)')
+          echo "GREEN_REVISION=$GREEN_REVISION" >> $GITHUB_ENV
+
+      - name: Tag the new revision (Green)
+        run: |
+          gcloud run services update-traffic ${{ vars.SERVICE_NAME }} --region ${{ vars.GOOGLE_LOCATION }} --project ${{ fromJson(env.ENVIRONMENT_CONFIG).GOOGLE_PROJECT }}  --set-tags green=${{env.GREEN_REVISION}}
+
+      - name: Migrate traffic over to the new revision (Green)
+        run: |
+          gcloud run services update-traffic ${{ vars.SERVICE_NAME }} --region ${{ vars.GOOGLE_LOCATION }} --project ${{ fromJson(env.ENVIRONMENT_CONFIG).GOOGLE_PROJECT }} --to-revisions ${{ env.GREEN_REVISION }}=100,${{ env.BLUE_REVISION }}=0 --remove-tags green

@@ -1,0 +1,70 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: "${SERVICE_NAME}"
+  namespace: "${GOOGLE_PROJECT}"
+  labels:
+    owner: "${LABEL_OWNER}"
+    environment: "${LABEL_ENVIRONMENT}"
+    customer: "${LABEL_CUSTOMER}"
+    service: "${SERVICE_NAME}"
+    industry: "${LABEL_INDUSTRY}"
+    application: "${LABEL_APPLICATION}"
+    cloud.googleapis.com/location: "${GOOGLE_LOCATION}"
+  annotations:
+    run.googleapis.com/minScale: "${MIN_INSTANCES}"
+    run.googleapis.com/launch-stage: "BETA"
+    run.googleapis.com/ingress: ${INGRESS_SETTINGS}
+spec:
+  template:
+    metadata:
+      labels:
+        owner: "${LABEL_OWNER}"
+        environment: "${LABEL_ENVIRONMENT}"
+        customer: "${LABEL_CUSTOMER}"
+        service: "${SERVICE_NAME}"
+        industry: "${LABEL_INDUSTRY}"
+        application: "${LABEL_APPLICATION}"
+        cloud.googleapis.com/location: "${GOOGLE_LOCATION}"
+        run.googleapis.com/startupProbeType: Custom
+      annotations:
+        run.googleapis.com/encryption-key: "projects/${KEYS_PROJECT}/locations/${GOOGLE_LOCATION}/keyRings/platform/cryptoKeys/platform-${LABEL_ENVIRONMENT}"
+        run.googleapis.com/post-key-revocation-action-type: prevent-new
+        run.googleapis.com/vpc-access-egress: private-ranges-only
+        run.googleapis.com/cloudsql-instances: "${DB_CONNECTION}"
+        run.googleapis.com/execution-environment: gen2
+        run.googleapis.com/vpc-access-connector: "projects/${GOOGLE_PROJECT}/locations/${GOOGLE_LOCATION}/connectors/serverless-vpc-connector"
+        run.googleapis.com/startup-cpu-boost: "true"
+        autoscaling.knative.dev/maxScale: "${MAX_INSTANCES}"
+    spec:
+      containerConcurrency: 80
+      timeoutSeconds: 3600
+      serviceAccountName: "${SERVICE_NAME}-service@${GOOGLE_PROJECT}.iam.gserviceaccount.com"
+
+      containers:
+        - name: "${SERVICE_NAME}-1"
+          image: "${GOOGLE_LOCATION}-docker.pkg.dev/emnos-tools/docker-portal/${IMAGE_NAME}:${IMAGE_TAG}"
+          ports:
+            - name: http1
+              containerPort: "${APP_PORT}"
+          env:
+            - name: KO_API_KEY
+              value: "${KO_API_KEY}"
+            - name: APP_PORT
+              value: "${APP_PORT}"
+            - name: PGPT_PROFILES
+              value: "${PGPT_PROFILES}"
+            - name: GPT_GEMINI_KEY
+              value: "${GPT_GEMINI_KEY}"
+
+          resources:
+            limits:
+              cpu: "2000m"
+              memory: 2Gi
+          startupProbe:
+            initialDelaySeconds: 10
+            timeoutSeconds: 1
+            periodSeconds: 60
+            failureThreshold: 3
+            tcpSocket:
+              port: ${APP_PORT}
