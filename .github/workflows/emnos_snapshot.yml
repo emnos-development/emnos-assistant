@@ -29,11 +29,11 @@ jobs:
 
       - name: Get the json files from Knowledge Owl
         run: |
-          curl -u ${{ vars.KO_API_KEY }}:X \      
+          curl -u ${{ secrets.KO_API_KEY }}:X \      
           "https://app.knowledgeowl.com/api/head/article.json" \    
           -o kow_articles.json
 
-          curl -u ${{ vars.KO_API_KEY }}:X \
+          curl -u ${{ secrets.KO_API_KEY }}:X \
           "https://app.knowledgeowl.com/api/head/glossaryterm.json" \
           -o kow_glossaryterm.json
 
