@@ -20,7 +20,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN curl -sSL https://install.python-poetry.org | python3 -
 COPY --chown=emnos:emnos . /opt/emnosapp/private-gpt
 
-RUN poetry install --extras "llms-gemini embeddings-gemini vector-stores-qdrant" --no-interaction --no-ansi \
+RUN poetry install --extras "llms-gemini embeddings-gemini ui vector-stores-qdrant" --no-interaction --no-ansi \
     && pip install -e .
 
 EXPOSE 8080
