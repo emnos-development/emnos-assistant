@@ -1,0 +1,110 @@
+# When to use Origin of customers
+
+**Origin of customers**is an on-demand customer insight that enables commercial teams to understand how much of your products' or brand's customer base is renewed and where customers come from and go to.
+
+![](images/1736177046317.png)
+
+## When to use Origin of customers
+
+Origin of customers is used to **measure the number of new, lost and constant customers** of a product or brand between 2 time periods.
+
+It is particularly interesting when **analyzing the recruitement of a brand for its category**. The insight will show if your brand's new customers were already buying the category, or if your brand successfully recruited for the category as well. On the contrary, it will also show if the customers lost for your brand stopped buying the category altogether.
+
+Origin of customers is also great to **measure the sales impact of all these customer base changes**, especially the sales evolution of your constant customers. You will identify which sales drivers explain their change in spending between the 2 time periods analyzed.
+
+## How to access Origin of customers
+
+#### To create a new Origin of customers insight
+
+In the "Customer insights" topic of your navigation pane, on the left side of the screen, select "New request" and then click on "Start request" in the "Origin of customers" card.
+
+![](images/1737563968606.png)
+
+#### To view an existing Origin of customers insight
+
+In the "Customer insights" topic of your navigation pane, on the left side of the screen, select "My customer insights" and then use the "Insight type" filter to only display Origin of customers insights in your library. You can then search for the specific insight you need.
+
+![](images/1737972548205.png)
+
+## How to request Origin of customers
+
+In Origin of customers, the emnos platform will analyze the change in your customer base between 2 time periods and divide your customers into groups depending on their purchasing behavior:
+
+* new/lost to product
+* new/lost to competition
+* new/lost to total stores
+* constant customers
+
+The platform will also compute the sales changes for all customer groups above and identify the sales drivers creating these evolutions.
+
+To launch an Origin of customers, you need to set up parameters for 4 dimensions in the ordering wizard that opens when you click "Start request". All steps are mandatory, unless "optional" is mentioned:
+
+* Select two time periods of equal length in days
+* Select the product universe to analyze (e.g., the brand Coca-cola)
+* Select the competition universe of your product (e.g.; the Carbonated Soft Drinks category) and name it. This name will be used in the final output
+* *optional* - Select the store universe to analyze (e.g., Supermarkets). Per default, all like-for-like stores are included
+* *optional* - Select the customer universe to analyze (e.g., Frequent buyers). Per default, all Loyalty Program members are included
+* *optional* - Select the promotion filter to consider (e.g.; Promotional transactions excluded). Per default, all transactions are included
+
+## How to read Origin of customers
+
+Origin of customers has 3 pages you can navigate using buttons at the top of your screen:
+
+1. **"Overview" page** enables you to understand how many of your products' customers are new, lost or constant. It shows the sales changes for the 3 customer groups and displays the sales drivers explaining these sales evolutions.
+2. **"Detailed flow" pag****e** enables you to understand where customers come from and go to by replicating the analysis of "Overview" at a more detailed level. The New/Lost customers are divided further into 3 groups based on their purchasing behavior of the competition universe and all other products in store (i.e. total stores products). ![](images/1735568847188.png)
+   * If your product has a customer increase in "New/lost to total stores", then it's benefitting from the overall attractiveness of the retailer.
+   * If your product has a customer increase in "New/lost to competition", then it's recruiting for its competition universe.
+   * If you only have a customer increase in "New/lost to product" then your product is only recruiting for itself.
+3. **"Summary table" page** enables you to compare at a glance all sales drivers values and evolution for all customer groups. You will also find information on Units and Volume changes for each customer group. This table can be exported to Excel.
+
+All parameters set up for your request can be viewed by clicking on a dedicated button at the top of the page, called "See selected parameters":![](images/1742315728018.png)
+
+## Metrics
+
+| Insight page \| | KPI name \| | Considerations for this insight \| |
+| --- | --- | --- |
+| Overview, Detailed flow \| | P1 customers \| | Customers of the product in the oldest period (P1) \| |
+| Overview, Summary table \| | New customers New in P2 \| | Customers that purchased the product in the most recent period (P2) but not in P1 \| |
+| Overview, Summary table \| | Lost customers Lost from P1 \| | Customers that purchased the product in P1 but not in P2 \| |
+| Overview, Detailed flow \| | P2 customers \| | Customers of the product in the most recent period (P2) \| |
+| Overview, Detailed flow \| | P1 sales \| | Sales of the product in P1 \| |
+| Overview \| | New/lost customers sales change \| | New customers' spending on product in P2 - Lost customers' spending on product in P1 \| |
+| Overview, Detailed flow \| | Constant customers sales change \| | Constant customers' spending on product in P2 - Constant customers' spending on product in P1 \| |
+| Overview, Detailed flow \| | P2 sales \| | Sales of the product in P2 \| |
+| Overview, Detailed flow, Summary table \| | Baskets per customer \| | \| |
+| Overview, Detailed flow, Summary table \| | Sales per basket \| | \| |
+| Detailed flow \| | New/lost to product \| | Difference between number of "new to product in P2" and number of "lost to product from P1" customers \| |
+| Summary table \| | New to product in P2 \| | New customer recruited to my product in P2, that was already buying the competition universe in P1 \| |
+| Summary table \| | Lost to product from P1 \| | Customer lost to my product in P2, that is still buying the competition universe \| |
+| Detailed flow \| | New/lost to competition \| | Difference between number of "new to competition in P2" and number of "lost to competition from P1" customers \| |
+| Summary table \| | New to competition in P2 \| | New customer recruited to my product in P2, that is also buying the competition universe for the first time \| |
+| Summary table \| | Lost to competition fom P1 \| | Customer lost to my product in P2, that is no longer buying the competition universe either \| |
+| Detailed flow \| | New/lost to total stores \| | Difference between number of "new to total stores in P2" and number of "lost to total stores from P1" customers \| |
+| Summary table \| | New to total stores in P2 \| | New customer recruited to the retailer as a whole in P2, that happens to buy my product \| |
+| Summary table \| | Lost to total stores from P1 \| | Customer lost for the retailer as a whole in P2, so isn't buying my product anymore \| |
+| Detailed flow \| | New/lost to product sales change \| | "New to product" customers' spending on product in P2 - "Lost to product" customers' spending on product in P1 \| |
+| Detailed flow \| | New/lost to competition sales change \| | "New to competition" customers' spending on product in P2 - "Lost to competition" customers' spending on product in P1 \| |
+| Detailed flow \| | New/lost to total stores sales change \| | "New to total stores" customers' spending on product in P2 - "Lost to total stores" customers' spending on product in P1 \| |
+| Summary table \| | Constant customers P1 \| | Describes the purchasing behavior of Constant customers during P1 \| |
+| Summary table \| | Constant customers P2 \| | Describes the purchasing behavior of Constant customers during P2 \| |
+| Summary table \| | Constant customers change (%) \| | Evolution in % of all sales drivers for Constant customers between P1 and P2 \| |
+| Summary table \| | New vs Lost (%) \| | Evolution in % of all sales drivers for "New in P2" customers compared to "Lost from P1" customers \| |
+| Summary table \| | New vs Lost to product (%) \| | Evolution in % of all sales drivers for "New to product in P2" customers compared to "Lost to product from P1" customers \| |
+| Summary table \| | New vs Lost to competition (%) \| | Evolution in % of all sales drivers for "New to competition in P2" customers compared to "Lost to competition from P1" customers \| |
+| Summary table \| | New vs Lost to total stores (%) \| | Evolution in % of all sales drivers for "New to total stores in P2" customers compared to "Lost to total stores from P1" customers \| |
+| Summary table \| | Units \| | \| |
+| Summary table \| | Units per customer \| | \| |
+| Summary table \| | Units per basket \| | \| |
+| Summary table \| | Volume \| | \| |
+| Summary table \| | Volume per customer \| | \| |
+| Summary table \| | Volume per basket \| | \| |
+
+## Introduction videos for Origin of customers
+
+#### Requesting Origin of customers
+
+[Video: origin-of-customers-howtorequest-3de4eb.mp4](videos/origin-of-customers-howtorequest-3de4eb.mp4)
+
+#### Reading Origin of customers
+
+[Video: origin-of-customers-howtoread.mp4](videos/origin-of-customers-howtoread.mp4)

@@ -1,0 +1,115 @@
+# When to use KPI export
+
+**KPI export** is emnos' on-demand, custom data extraction module. The output is an Excel file with KPIs in a table that should be downloaded to your computer.
+
+![](images/1730136641572.png)
+
+## When to use KPI export
+
+1. KPI export is meant to help you **analyze performance on granular levels** that you cannot find in your datastories (like EAN level) or on adhoc product, store and time aggregates (like a specific weekend or day).
+2. KPI export is also great if you need to **extract data** to feed some internal reporting tool.
+
+## How to access KPI export
+
+KPI export is accessible from the navigation pane of the emnos platform, on the left side of the screen.
+
+![](images/1729869689837.png)
+
+## How to use KPI export
+
+**To launch a KPI export**, you need to select "New request" in the navigation pane. The KPI export ordering wizard will open. Follow directions to set up parameters for your request:
+
+* Select the time period to analyze. It will have one of the following formats:
+  + single time period,
+  + single time period split by days, weeks or month,
+  + two time periods compared
+* Select as many KPIs as you need
+* Select the product universe to analyze (e.g., Soft Drinks or Running)
+* Set up analysis levels for your product universe (e.g., split by brand)
+* Select the store universe to analyze (e.g., all stores)
+* Set up analysis levels for your store universe (e.g., split by region)
+* Select the customer universe to analyze (e.g., Loyalty Program Members)
+* Set up one analysis level for your customer universe (e.g., split by Frequency segmentation)
+
+**To retrieve a previously launched KPI export**, select "My KPI exports" in the navigation pane. The KPI export library will open. It displays all requests that you launched yourself, as well as the requests that have been shared with you by other users of the platform. The KPI export library can be filtered by:
+
+* tags attached to requests
+* requests creation date (yesterday, last week, last month)
+* sharing status of requests (shared with me, owned by me)
+* searched for a specific request name
+
+## What functionalities does KPI export have
+
+* Re-load parameters from a previous KPI export as a base for your new request
+* Name your KPI export
+* Tag your KPI export to identify it easily in the "My KPI exports" library. For example, you can add a project name tag to all requests that are launched for a specific project and, later on, filter the library based on this tag to display only requests relevant for the project.
+* Choose the granularity of your output between three options:
+  + "combined splits" = only show the most granular combination of all analysis levels (e.g., each Soft Drinks or Running brands in each region)
+  + "individual splits and total" = only show the total universe and the individual analysis levels (e.g., Soft Drinks or Running in all stores + each brand in all stores + Soft Drinks or Running in each region)
+  + "all splits" = show both of the above
+* Set up a recurrence for your KPI export (none, weekly, monthly)
+* Set up an e-mail notification to know when your KPI export is ready to download
+* Change the output file format from xls to csv or txt
+* Share the output with other users of the emnos platform that are part of your organization
+
+## Metrics
+
+| KPI name \| | KPI type \| | Loyalty KPI \| | Available for \| |
+| --- | --- | --- | --- |
+| Current stock (units) \| | Stock \| | N \| | Sports \| |
+| Open order (units) \| | Stock \| | N \| | Sports \| |
+| Sell-through rate \| | Stock \| | N \| | Sports \| |
+| Ordered units \| | Stock \| | N \| | Sports \| |
+| Received units \| | Stock \| | N \| | Sports \| |
+| Next delivery date \| | Stock \| | N \| | Sports \| |
+| Baskets \| | General \| | N \| | Food, Sports \| |
+| Baskets per customer \| | General \| | Y \| | Food, Sports \| |
+| Customers \| | General \| | Y \| | Food, Sports \| |
+| Customers (total stores) \| | General \| | Y \| | Food, Sports \| |
+| Customer penetration \| | General \| | Y \| | Food, Sports \| |
+| Customers penetration total stores \| | General \| | Y \| | Food, Sports \| |
+| First transaction date \| | General \| | N \| | Food, Sports \| |
+| Last transaction date \| | General \| | N \| | Food, Sports \| |
+| Volume \| | Volume \| | N \| | Food \| |
+| Volume per basket \| | Volume \| | N \| | Food \| |
+| Volume per customer \| | Volume \| | Y \| | Food \| |
+| Gross sales \| | Sales \| | N \| | Sports \| |
+| Gross units \| | Unit \| | N \| | Sports \| |
+| Price per volume \| | Sales \| | N \| | Food \| |
+| Price per unit \| | Sales \| | N \| | Food, Sports \| |
+| Promo volume \| | Volume \| | N \| | Food \| |
+| Promo sales \| | Sales \| | N \| | Food, Sports \| |
+| Promo units \| | Unit \| | N \| | Food, Sports \| |
+| Repurchase rate \| | General \| | Y \| | Food, Sports \| |
+| Return rate (Sales) \| | Sales \| | N \| | Sports \| |
+| Return rate (Units) \| | Units \| | N \| | Sports \| |
+| Returns (Sales) \| | Sales \| | N \| | Sports \| |
+| Returns (Units) \| | Units \| | N \| | Sports \| |
+| Sales \| | Sales \| | N \| | Food, Sports \| |
+| Sales of exclusive customers \| | Sales \| | Y \| | Food, Sports \| |
+| Sales per basket \| | Sales \| | N \| | Food, Sports \| |
+| Sales per customer \| | Sales \| | Y \| | Food, Sports \| |
+| Selling stores \| | General \| | N \| | Food, Sports \| |
+| Selling weeks \| | General \| | N \| | Food, Sports \| |
+| Share of volume \| | Volume \| | N \| | Food \| |
+| Share of exclusive customers \| | General \| | Y \| | Food, Sports \| |
+| Share of sales of exclusive customers \| | Sales \| | N \| | Food, Sports \| |
+| Share of promo sales \| | Sales \| | N \| | Food, Sports \| |
+| Share of sales \| | Sales \| | N \| | Food, Sports \| |
+| Share of units \| | Unit \| | N \| | Food, Sports \| |
+| Unique products per week \| | Unit \| | N \| | Food, Sports \| |
+| Units \| | Unit \| | N \| | Food, Sports \| |
+| Units per basket \| | Unit \| | N \| | Food, Sports \| |
+| Units per customer \| | Unit \| | Y \| | Food, Sports \| |
+| Weekly sales per store (weighted avg.) \| | Sales \| | N \| | Food, Sports \| |
+| Weekly units per store (weighted avg.) \| | Unit \| | N \| | Food, Sports \| |
+
+## Introduction video to KPI export
+
+Mandatory steps
+
+[Video: new-kpi-export-request-sub.mp4](videos/new-kpi-export-request-sub.mp4)
+
+Advanced optional step
+
+[Video: new-kpi-export-request-advanced-step.mp4](videos/new-kpi-export-request-advanced-step.mp4)

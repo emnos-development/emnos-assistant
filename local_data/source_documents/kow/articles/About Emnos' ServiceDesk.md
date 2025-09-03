@@ -1,0 +1,36 @@
+# What Can You Do Here?
+
+emnos' Customer ServiceDesk platform is designed to give our customers a streamlined and professional experience when interacting with our support team.
+
+## What Can You Do Here?
+
+* Report technical issues or bugs
+* Submit feature or improvement requests
+* Ask questions or request general support
+* Track the status of your existing tickets
+
+## How to Use the Customer Service Desk
+
+To use our Customer Service Desk, you will need a valid [ServiceDesk account](/help/servicedesk-account). This account is different from your Emnos Portal account, and you can learn more about it on the linked page.
+
+Once your Service Desk account is active, you can:
+
+* Log in to the [ServiceDesk portal](/help/servicedesk-portal) to submit and track your requests
+* Send an email directly to [servicedesk@emnos.com](/help/servicedesk-email) to raise issues or make suggestions
+
+## Our Support Structure
+
+The Emnos Customer Service Desk is your **first line of support**. Our team triages and handles incoming tickets and questions. If needed, your request may be escalated further:
+
+* **Second Line Support:** Business-side experts familiar with your specific use cases and configurations.
+* **Third Line Support:** Technical teams including architects, developers, data engineers, and analytics specialists.
+
+This tiered support model ensures that your issue or request is handled by the right people, as quickly and efficiently as possible.
+
+If you have any trouble accessing the ServiceDesk or need assistance, don’t hesitate to contact us via servicedesk@emnos.com.
+
+This means you that for the cases described above, you should always use service desk as the first point of contact. Please do not call or email Emnos collaborators.
+
+## Powered by Atlassian JIRA Service Management
+
+We use Atlassian JIRA Service Management to manage customer requests, report bugs, and receive suggestions efficiently. It ensures transparency, traceability, and faster resolution times.

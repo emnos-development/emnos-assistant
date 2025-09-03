@@ -1,0 +1,96 @@
+# When to use Origin of sales
+
+**Origin of sales** is an on-demand customer insight that enables commercial teams to figure out how much of their product's sales growth is positive for the category and how much is cannibalization. Or the reverse, how much of their product's sales decrease is negative for the category.
+
+![](images/1736438182108.png)
+
+## When to use Origin of sales
+
+Origin of sales is used to **measure the** **additional sales** a brand is generating for its category, or the additional sales a single product is generating for its brand.
+
+It is particularly interesting when analyzing the **impact of an innovation**. You will know how much of your product's sales is creating new revenues for the category/ the brand and how much is coming from cannibalization of existing products.
+
+Origin of sales is also great to identify which products or brands of your **competition universe you are gaining from or losing to**.
+
+## How to access Origin of sales
+
+#### To create a new Origin of sales insight
+
+In the "Customer insights" topic of your navigation pane, on the left side of the screen, select "New request" and then click on "Start request" in the "Origin of sales" card.
+
+![](images/1742315343147.png)
+
+#### To view an existing Origin of sales insight
+
+In the "Customer insights" topic of your navigation pane, on the left side of the screen, select "My customer insights" and then use the "Insight type" filter to only display Origin of sales insights in your library. You can then search for the specific insight you need.
+
+![](images/1737971781470.png)
+
+## How to request Origin of sales
+
+In Origin of sales, the emnos platform will compute sales change of your product between 2 time periods. It will show how much of this change is:
+
+* creating additional sales for your competition universe
+* due to sales transfers between your product and products of the competition universe.
+
+To launch an Origin of sales, you need to set up parameters for 4 dimensions in the ordering wizard that opens when you click "Start request". All steps are mandatory, unless "optional" is mentioned:
+
+* Select two time periods of equal length in days
+* Select the product universe to analyze (e.g., the brand Coca-cola)
+* *optional* - you can add an analysis level to your product universe to compare purchasing behavior on different sub-groups of products  (e.g.; if you split by Range = regular, zero, decaf, etc. then you will compute additional sales and analyze transfers for each Coca-cola range)
+* Select the competition universe of your product (e.g.; the Carbonated Soft Drinks category) and name it. This name will be used in the final output
+* Set up an analysis level for your competition universe. This is the granularity used to identify what product groups are transfering sales with your product. SKU or brand are usual analysis levels  (e.g.; if you split by Brand, then you will know which brands of carbonated soft drinks are transfering sales with each range of Coca-cola)
+* *optional* - Select the store universe to analyze (e.g., Supermarkets). Per default, all like-for-like stores are included
+* *optional* - Select the customer universe to analyze (e.g., Frequent buyers). Per default, all Loyalty Program members are included
+* *optional* - Select the promotion filter to consider (e.g.; Promotional transactions excluded). Per default, all transactions are included
+
+## How to read Origin of sales
+
+Origin of sales has 3 pages you can navigate using buttons at the top of your screen:
+
+1. **"Overview" page** enables you to know how much of your products' sales change is beneficial to the competition universe and how much is just sales transfers.
+   1. If "Net sales from new/lost customers" is positive, then the product has recruited for the competition universe. It has gained new customers that are also new to the competition universe. If the KPI is negative, then the product lost customers that completely stopped buying the competition universe as well.
+   2. If "Net incremental sales from constant customers" is positive then constant customers have increased their spending on the competition universe thanks to our product (they started buying/bought more our product). If the KPI is negative, then constant customers of the competition universe have decreased their spending on the competition universe because they stopped buying/bought less of our product.
+   3. If "Net transferred sales from constant customers" is positive, then our product is cannibalizing the competition universe. If the KPI is negative then our product is being cannibalized (losing sales to other products of the competition universe).
+2. **"Detailed transfers" pag****e** enables you to identify the products/brands that contributed most to the sales transfers positively and negatively.
+   1. "Top 10 gained from" lists products that we are cannibalizing (we are gaining sales from them). "Top 10 lost to" lists products that are cannibalizing us (we are losing sales to them).
+   2. High/low significance means that the transfers observed between this competition product and our focus product (chosen in the filter) is outside expected levels of transfers, given the weight of the competition product in the competition universe. On the contrary, a medium significance means that the transfers observed are in line with expected levels.
+3. **"Summary table" page** enables you to compare at a glance all products/brands of your product universe, if you had set up an analysis level on the product universe (e.g., split by Range). This table can be exported to Excel.
+
+The first 2 pages of the insight have a product filter on the right side, allowing you to switch display between products:
+
+![](images/1735313971985.png)
+
+The filter is local and only impacts the page it's displayed on. If you change page within the insight, then the filter needs to be set up again.
+
+All parameters set up for your request can be viewed by clicking on a dedicated button at the top of the page, called "See selected parameters":![](images/1742315644725.png)
+
+## Metrics
+
+| Insight page \| | KPI name \| | Considerations for this insight \| |
+| --- | --- | --- |
+| Overview, Summary table \| | Change - Sales (Loyalty Program Members) \| | Sales change of the Product selected in the filter \| |
+| Overview, Summary table \| | Net sales from new/lost customers \| | New customers spending - lost customers spending, where customers are new/lost to both the competition and the product \| |
+| Overview, Summary table \| | Net incremental sales from constant customers \| | Increased spending on the product + reduced spending on the product that caused an increase/decrease in spending on the competition as well \| |
+| Overview, Detailed transfers, Summary table \| | Net transferred sales from constant customers \| | Sales gained from competition + sales lost to competition of customers that purchased the competition and the product in both time periods \| |
+| Overview \| | Additional sales for [competition] \| | Sum of Net sales from new/lost customers + Net incremental sales from constant customers (can be negative) \| |
+| Overview \| | Transferred sales within [competition] \| | Same as net transferred sales from constant customers \| |
+| Detailed transfers, Summary table \| | Sales gained from competition \| | Sum of all positive sales transfers from competition universe to your product \| |
+| Detailed transfers, Summary table \| | Sales lost to competition \| | Sum of all negative sales transfers away from your product towards competition universe \| |
+| Detailed transfers \| | Significance (the KPI behind is an index) \| | Index = weight of competition product in the transfers / weight of competition product in the competition universe sales \*100 \| |
+| Summary table \| | Sales from lost customers \| | Lost customers spending, where customers are lost to both the competition and the product \| |
+| Summary table \| | Sales from new customers \| | New customers spending, where customers are new to both the competition and the product \| |
+| Summary table \| | Increased sales of constant customers \| | Increased spending on the product that caused an increase in spending on the competition as well \| |
+| Summary table \| | Reduced sales of constant customers \| | Reduced spending on the product that caused a decrease in spending on the competition as well \| |
+
+![](images/1735576590494.png)
+
+## Introduction videos for Origin of sales
+
+#### Requesting Origin of sales
+
+[Video: origin-of-sales-howtorequest.mp4](videos/origin-of-sales-howtorequest.mp4)
+
+#### Reading Origin of sales
+
+[Video: origin-of-sales-howtoread.mp4](videos/origin-of-sales-howtoread.mp4)
