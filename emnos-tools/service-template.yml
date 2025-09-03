@@ -61,10 +61,10 @@ spec:
             limits:
               cpu: "2000m"
               memory: 2Gi
-          startupProbe:
-            initialDelaySeconds: 10
-            timeoutSeconds: 1
-            periodSeconds: 60
-            failureThreshold: 3
-            tcpSocket:
-              port: ${APP_PORT}
+        #  startupProbe:
+        #    initialDelaySeconds: 10
+        #    timeoutSeconds: 1
+        #    periodSeconds: 60
+        #    failureThreshold: 3
+        #    tcpSocket:
+        #      port: ${APP_PORT}
