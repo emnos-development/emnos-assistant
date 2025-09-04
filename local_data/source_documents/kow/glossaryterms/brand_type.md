@@ -1,0 +1,5 @@
+# Brand Type
+
+**Definition:**
+
+TBD
