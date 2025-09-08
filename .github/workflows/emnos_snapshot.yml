@@ -54,7 +54,7 @@ jobs:
           echo "Creating Dockerfile..."
           LATEST_BASE_IMAGE=${{ needs.export-container-variables.outputs.LATEST_BASE_IMAGE_NAME }} LATEST_BASE_IMAGE_TAG=${{ needs.export-container-variables.outputs.LATEST_BASE_IMAGE_TAG }} \
           bash -x ./emnos-tools/create-ingestion-dockerfile.sh
-          cat ingestion.dockerfile
+          cat ./emnos-tools/ingestion.dockerfile
       
       - name: Build the ingestion container
         id: build-ingestion
@@ -90,7 +90,7 @@ jobs:
           echo "Creating Dockerfile..."
           LATEST_BASE_IMAGE=${{ needs.export-container-variables.outputs.LATEST_BASE_IMAGE_NAME }} LATEST_BASE_IMAGE_TAG=${{ needs.export-container-variables.outputs.LATEST_BASE_IMAGE_TAG }} \
           bash -x ./emnos-tools/create-dockerfile.sh
-          cat dockerfile
+          cat ./emnos-tools/dockerfile
       
       - name: Build and push container
         id: build-image
