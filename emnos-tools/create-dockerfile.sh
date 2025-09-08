@@ -17,7 +17,7 @@ COPY --chown=emnos:emnos . /opt/emnosapp/private-gpt
 COPY --chown=emnos:emnos ./local_data/private_gpt/qdrant /opt/emnosapp/private-gpt/local_data/qdrant
 
 RUN poetry install --extras "llms-gemini embeddings-gemini ui vector-stores-qdrant" --no-interaction --no-ansi \
-    && pip install  --no-cache-dir -e .
+    && pip install -e .
 
 EXPOSE 8080
 ENTRYPOINT ["bash", "-c", "PGPT_PROFILES=gemini make run"]

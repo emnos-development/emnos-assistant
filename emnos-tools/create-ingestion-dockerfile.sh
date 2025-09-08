@@ -15,7 +15,7 @@ RUN curl -sSL https://install.python-poetry.org | python3 -
 COPY --chown=emnos:emnos . /opt/emnosapp/private-gpt
 
 RUN poetry install --extras "llms-gemini embeddings-gemini ui vector-stores-qdrant" --no-interaction --no-ansi \
-    && pip install  --no-cache-dir -e .
+    && pip install -e .
 
 ENTRYPOINT ["bash", "-c", "make wipe && make ingest $INGEST_FOLDER"]
 
