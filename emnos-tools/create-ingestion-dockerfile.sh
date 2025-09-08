@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-cat << EOF >> ingestion.dockerfile
+cat << EOF >> ./emnos-tools/ingestion.dockerfile
 
 FROM $LATEST_BASE_IMAGE:$LATEST_BASE_IMAGE_TAG
 

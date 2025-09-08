@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-cat << EOF >> dockerfile
+cat << EOF >> ./emnos-tools/dockerfile
 
 FROM $LATEST_BASE_IMAGE:$LATEST_BASE_IMAGE_TAG
 
