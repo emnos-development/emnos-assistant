@@ -1,0 +1,195 @@
+name: RELEASE CANDIDATE build for Emnos Assistant (emnos-assistant)
+
+concurrency:
+  group: staging
+  cancel-in-progress: true
+
+on:
+  push:
+    tags:
+      - v[0-9]+.[0-9]+.[0-9]+-rc+
+  workflow_dispatch:
+
+jobs:
+  # Environment/variable preparation for container build
+  export-container-variables:
+    name: Export container build variables
+    runs-on: ubuntu-latest
+    outputs:
+      VERSION: ${{ steps.get-version.outputs.VERSION }}
+      LATEST_BASE_IMAGE_TAG: ${{ steps.latest-base-image-tag.outputs.LATEST_BASE_IMAGE_TAG }}
+      LATEST_BASE_IMAGE_NAME: ${{ steps.latest-base-image-name.outputs.LATEST_BASE_IMAGE_NAME }}
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@v4
+
+      - name: Get version from emnos_version.txt
+        id: get-version
+        run: echo VERSION=$(cat ./emnos-tools/emnos_version.txt) >> "$GITHUB_OUTPUT"
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.BUILD_GOOGLE_CREDENTIALS }}'
+
+      - name: Get the latest base image name
+        id: latest-base-image-name
+        run: echo LATEST_BASE_IMAGE_NAME=${{ vars.GOOGLE_LOCATION }}-docker.pkg.dev/${{ vars.CONTAINER_PROJECT }}/${{ vars.CONTAINER_BASE_REPOSITORY }}/emnos-${{ vars.CONTAINER_SERVICE }} >> $GITHUB_OUTPUT
+
+      - name: Get latest base image tag
+        id: latest-base-image-tag
+        run: echo LATEST_BASE_IMAGE_TAG=$(gcloud container images list-tags ${{ vars.GOOGLE_LOCATION }}-docker.pkg.dev/${{ vars.CONTAINER_PROJECT }}/${{ vars.CONTAINER_BASE_REPOSITORY }}/emnos-${{ vars.CONTAINER_SERVICE }} --limit=1 --format='value(TAGS)') >> $GITHUB_OUTPUT
+
+  data-ingestion-and-container-build:
+    name: Data Ingestion and container build
+    runs-on: ubuntu-latest
+    needs:
+      - export-container-variables
+    strategy:
+      fail-fast: false
+      matrix:
+        INDUSTRY: [FOOD]
+        ENVIRONMENT: [PROD]
+        CUSTOMER: [-PDOPT]
+        include:
+          - INDUSTRY: SPORT
+            ENVIRONMENT: PROD
+    environment: ${{ matrix.INDUSTRY }}-${{ matrix.ENVIRONMENT }}${{ matrix.CUSTOMER }}
+    env:
+      ENVIRONMENT_CONFIG: ${{ vars.ENVIRONMENT_CONFIG }}
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@v5
+
+      - name: Create the ingestion dockerfile
+        run: |
+          echo "Creating Dockerfile..."
+          LATEST_BASE_IMAGE=${{ needs.export-container-variables.outputs.LATEST_BASE_IMAGE_NAME }} LATEST_BASE_IMAGE_TAG=${{ needs.export-container-variables.outputs.LATEST_BASE_IMAGE_TAG }} \
+          bash -x ./emnos-tools/create-ingestion-dockerfile.sh
+          cat ./emnos-tools/ingestion.dockerfile
+      
+      - name: Build the ingestion container
+        id: build-ingestion
+        uses: mr-smithers-excellent/docker-build-push@v6
+        with:
+          image: ${{ vars.CONTAINER_PROJECT }}/${{ vars.CONTAINER_PORTAL_REPOSITORY }}/${{ github.event.repository.name }}-ingestion
+          dockerfile: ./emnos-tools/ingestion.dockerfile
+          tags: RC-${{ matrix.INDUSTRY }}${{ matrix.CUSTOMER }}-v${{needs.export-container-variables.outputs.VERSION }}-${{ github.RUN_NUMBER }}
+          registry: ${{ vars.GOOGLE_LOCATION }}-docker.pkg.dev
+          username: _json_key
+          password: ${{ secrets.BUILD_GOOGLE_CREDENTIALS }}
+          pushImage: false
+
+      - name: Data Ingestion
+        run: |
+          mkdir -p local_data/private_gpt/qdrant
+          chmod -R 777 local_data
+          docker run --rm \
+          -v $PWD/local_data:/opt/emnosapp/private-gpt/local_data \
+          -e GPT_GEMINI_KEY=${{ secrets.GPT_GEMINI_KEY }} \
+          ${{ steps.build-ingestion.outputs.imageFullName }}:RC-${{ matrix.INDUSTRY }}${{ matrix.CUSTOMER }}-v${{needs.export-container-variables.outputs.VERSION }}-${{ github.RUN_NUMBER }}
+
+      - name: Create the dockerfile
+        run: |
+          echo "Creating Dockerfile..."
+          LATEST_BASE_IMAGE=${{ needs.export-container-variables.outputs.LATEST_BASE_IMAGE_NAME }} LATEST_BASE_IMAGE_TAG=${{ needs.export-container-variables.outputs.LATEST_BASE_IMAGE_TAG }} \
+          bash -x ./emnos-tools/create-dockerfile.sh
+          cat ./emnos-tools/dockerfile
+      
+      - name: Build and push container
+        id: build-image
+        uses: mr-smithers-excellent/docker-build-push@v6
+        with:
+          image: ${{ vars.CONTAINER_PROJECT }}/${{ vars.CONTAINER_PORTAL_REPOSITORY }}/${{ github.event.repository.name }}
+          dockerfile: ./emnos-tools/dockerfile
+          tags: RC-${{ matrix.INDUSTRY }}${{ matrix.CUSTOMER }}-v${{needs.export-container-variables.outputs.VERSION }}-${{ github.RUN_NUMBER }}
+          registry: ${{ vars.GOOGLE_LOCATION }}-docker.pkg.dev
+          username: _json_key
+          password: ${{ secrets.BUILD_GOOGLE_CREDENTIALS }}
+          pushImage: true
+
+  # Deploy Container to DEV
+  deploy-to-cloud-run:
+    name: Deploy to Cloud Run
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        INDUSTRY: [FOOD]
+        ENVIRONMENT: [DEV]
+        CUSTOMER: [-PDOPT]
+        include:
+          - INDUSTRY: SPORT
+            ENVIRONMENT: DEV
+    environment: ${{ matrix.INDUSTRY }}-${{ matrix.ENVIRONMENT }}${{ matrix.CUSTOMER }}
+    env:
+      ENVIRONMENT_CONFIG: ${{ vars.ENVIRONMENT_CONFIG }}
+    needs:
+      - export-container-variables
+      - data-ingestion-and-container-build
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@v5
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.DEPLOY_GOOGLE_CREDENTIALS }}'
+
+      - name: Create Service declaration
+        run: |-
+          echo "##### APP variables export"
+          export APP_PORT=${{ vars.APP_PORT }}
+          export GOOGLE_PROJECT=${{ fromJson(env.ENVIRONMENT_CONFIG).GOOGLE_PROJECT }}
+          export GOOGLE_LOCATION=${{ vars.GOOGLE_LOCATION }}
+          export KEYS_PROJECT=${{ vars.KEYS_PROJECT}}
+          export PGPT_PROFILES=${{ vars.PGPT_PROFILES }}
+          export GPT_GEMINI_KEY=${{ secrets.GPT_GEMINI_KEY }}
+          export KO_API_KEY=${{ secrets.KO_API_KEY }}
+          export INGRESS_SETTINGS=${{ vars.INGRESS_SETTINGS }}
+
+          echo "##### CONTAINER variables export"
+          export IMAGE_NAME=${{ vars.SERVICE_NAME }}
+          export IMAGE_TAG=RC-${{ matrix.INDUSTRY }}${{ matrix.CUSTOMER }}-v${{ needs.export-container-variables.outputs.VERSION }}-${{ github.RUN_NUMBER }}
+          echo "##### SERVICE variables export"
+          export LABEL_CUSTOMER=${{ fromJson(env.ENVIRONMENT_CONFIG).LABEL_CUSTOMER }}
+          export LABEL_ENVIRONMENT=${{ fromJson(env.ENVIRONMENT_CONFIG).LABEL_ENVIRONMENT }}
+          export LABEL_OWNER=${{ fromJson(env.ENVIRONMENT_CONFIG).LABEL_OWNER }}
+          export LABEL_INDUSTRY=${{ fromJson(env.ENVIRONMENT_CONFIG).LABEL_INDUSTRY }}
+          export LABEL_APPLICATION=${{ fromJson(env.ENVIRONMENT_CONFIG).LABEL_APPLICATION }}
+          export SERVICE_ACCOUNT_NAME=${{ vars.SERVICE_NAME }}-service
+          export SERVICE_NAME=${{ vars.SERVICE_NAME }}
+          export MIN_INSTANCES=${{ fromJson(env.ENVIRONMENT_CONFIG).MIN_INSTANCES }}
+          export MAX_INSTANCES=${{ fromJson(env.ENVIRONMENT_CONFIG).MAX_INSTANCES }}    
+          envsubst < ./emnos-tools/service-template.yml > container.yaml
+          cat container.yaml
+
+      - name: Get previous revision (Blue)
+        id: get-blue
+        run: |
+          BLUE_REVISION=$(gcloud run services describe ${{ vars.SERVICE_NAME }} --region ${{ vars.GOOGLE_LOCATION }} --project ${{ fromJson(env.ENVIRONMENT_CONFIG).GOOGLE_PROJECT }} --format 'value(status.traffic[0].revisionName)')
+          echo "BLUE_REVISION=$BLUE_REVISION" >> $GITHUB_ENV
+
+      - name: Deploy new revision (Green)
+        id: deploy-green
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          project_id: ${{ fromJson(env.ENVIRONMENT_CONFIG).GOOGLE_PROJECT }}
+          service: ${{ vars.SERVICE_NAME }}
+          region: ${{ vars.GOOGLE_LOCATION }}
+          metadata: container.yaml
+          no_traffic: true
+
+      - name: Get new revision (Green)
+        id: get-green
+        run: |
+          GREEN_REVISION=$(gcloud run services describe ${{ vars.SERVICE_NAME }} --region ${{ vars.GOOGLE_LOCATION }} --project ${{ fromJson(env.ENVIRONMENT_CONFIG).GOOGLE_PROJECT }} --format 'value(status.latestCreatedRevisionName)')
+          echo "GREEN_REVISION=$GREEN_REVISION" >> $GITHUB_ENV
+
+      - name: Tag the new revision (Green)
+        run: |
+          gcloud run services update-traffic ${{ vars.SERVICE_NAME }} --region ${{ vars.GOOGLE_LOCATION }} --project ${{ fromJson(env.ENVIRONMENT_CONFIG).GOOGLE_PROJECT }}  --set-tags green=${{env.GREEN_REVISION}}
+
+      - name: Migrate traffic over to the new revision (Green)
+        run: |
+          gcloud run services update-traffic ${{ vars.SERVICE_NAME }} --region ${{ vars.GOOGLE_LOCATION }} --project ${{ fromJson(env.ENVIRONMENT_CONFIG).GOOGLE_PROJECT }} --to-revisions ${{ env.GREEN_REVISION }}=100,${{ env.BLUE_REVISION }}=0 --remove-tags green
