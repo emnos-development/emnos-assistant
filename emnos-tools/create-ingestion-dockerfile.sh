@@ -20,7 +20,7 @@ RUN curl -sSL https://install.python-poetry.org | python3 - \
     && poetry install --extras "llms-gemini embeddings-gemini ui vector-stores-qdrant" --no-interaction --no-ansi \
     && pip install -e .
 
-ENTRYPOINT ["bash", "-c", "make wipe && make ingest ./local_data/private_gpt/source_documents/kow"]
+ENTRYPOINT ["bash", "-c", "make wipe && PGPT_PROFILES=gemini make ingest ./local_data/private_gpt/source_documents/kow"]
 
 EOF
 
