@@ -17,8 +17,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 COPY --chown=emnos:emnos . /opt/emnosapp/private-gpt
 
 RUN curl -sSL https://install.python-poetry.org | python3 - \
-    && export PATH="$HOME/.local/bin:$PATH" \
-    && poetry install --extras "llms-gemini embeddings-gemini ui vector-stores-qdrant" --no-interaction --no-ansi \
+    && $HOME/.local/bin/poetry install --extras "llms-gemini embeddings-gemini ui vector-stores-qdrant" --no-interaction --no-ansi \
     && pip install -e .
 
 ENTRYPOINT ["bash", "-c", "make wipe && make ingest $INGEST_FOLDER"]
