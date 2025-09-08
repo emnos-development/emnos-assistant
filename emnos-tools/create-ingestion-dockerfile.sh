@@ -4,7 +4,8 @@ cat << EOF >> ./emnos-tools/ingestion.dockerfile
 
 FROM $LATEST_BASE_IMAGE:$LATEST_BASE_IMAGE_TAG
 
-RUN chown -R emnos:emnos /opt/emnosapp/private-gpt
+RUN mkdir -p /opt/emnosapp/private-gpt \
+    && chown -R emnos:emnos /opt/emnosapp/private-gpt
 
 USER emnos
 ENV HOME=/home/emnos
