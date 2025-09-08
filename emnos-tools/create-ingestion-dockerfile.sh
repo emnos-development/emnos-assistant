@@ -13,13 +13,13 @@ ENV PATH="$HOME/.local/bin:$PATH"
 WORKDIR /opt/emnosapp/private-gpt
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN curl -sSL https://install.python-poetry.org | python3 -
-
-COPY --chown=emnos:emnos pyproject.toml poetry.lock ./
-RUN poetry install --extras "llms-gemini embeddings-gemini ui vector-stores-qdrant" --no-interaction --no-ansi
 
 COPY --chown=emnos:emnos . /opt/emnosapp/private-gpt
-RUN pip install -e .
+
+RUN curl -sSL https://install.python-poetry.org | python3 - \
+    && export PATH="$HOME/.local/bin:$PATH" \
+    && poetry install --extras "llms-gemini embeddings-gemini ui vector-stores-qdrant" --no-interaction --no-ansi \
+    && pip install -e .
 
 ENTRYPOINT ["bash", "-c", "make wipe && make ingest $INGEST_FOLDER"]
 
