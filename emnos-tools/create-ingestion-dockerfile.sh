@@ -4,9 +4,12 @@ cat << EOF >> ./emnos-tools/ingestion.dockerfile
 
 FROM $LATEST_BASE_IMAGE:$LATEST_BASE_IMAGE_TAG
 
+RUN chown -R emnos:emnos /opt/emnosapp/private-gpt
+
 USER emnos
 ENV HOME=/home/emnos
 ENV PATH="$HOME/.local/bin:$PATH"
+
 WORKDIR /opt/emnosapp/private-gpt
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
