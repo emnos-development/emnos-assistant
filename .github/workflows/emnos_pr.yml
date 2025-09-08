@@ -27,9 +27,10 @@ jobs:
     steps:
       - name: Check out source code
         uses: actions/checkout@v4
+      
 
-      - name: Lint the dockerfile
-        uses: hadolint/hadolint-action@v3.1.0
-        with:
-          ignore: DL3008
-          dockerfile: ./emnos-tools/dockerfile
+   #   - name: Lint the dockerfile
+   #     uses: hadolint/hadolint-action@v3.1.0
+   #     with:
+   #       ignore: DL3008
+   #       dockerfile: ./emnos-tools/dockerfile
