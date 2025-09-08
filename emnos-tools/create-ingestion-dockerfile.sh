@@ -15,6 +15,7 @@ WORKDIR /opt/emnosapp/private-gpt
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN curl -sSL https://install.python-poetry.org | python3 -
+ENV PATH="$HOME/.local/bin:$PATH"
 
 COPY --chown=emnos:emnos . /opt/emnosapp/private-gpt
 
