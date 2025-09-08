@@ -69,10 +69,11 @@ jobs:
           pushImage: false
 
       - name: Data Ingestion
-        run:  docker run --rm \
-              -e INGEST_FOLDER=./local_data/private_gpt/source_documents/kow \
-              -v $PWD/local_data:/opt/emnosapp/private-gpt/local_data \
-              ${{ steps.build-ingestion.outputs.imageFullName }}
+        run: |
+          docker run --rm \
+          -e INGEST_FOLDER=./local_data/private_gpt/source_documents/kow \
+          -v $PWD/local_data:/opt/emnosapp/private-gpt/local_data \
+          ${{ steps.build-ingestion.outputs.imageFullName }}
       
   build-and-push-container:
     name: Build and push container
