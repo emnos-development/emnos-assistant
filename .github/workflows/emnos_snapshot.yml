@@ -73,7 +73,7 @@ jobs:
           docker run --rm \
           -e INGEST_FOLDER=./local_data/private_gpt/source_documents/kow \
           -v $PWD/local_data:/opt/emnosapp/private-gpt/local_data \
-          ${{ steps.build-ingestion.outputs.imageFullName }}
+          ${{ steps.build-ingestion.outputs.imageFullName }}:SNAPSHOT-v${{needs.export-container-variables.outputs.VERSION }}-${{ github.RUN_NUMBER }}
       
   build-and-push-container:
     name: Build and push container
