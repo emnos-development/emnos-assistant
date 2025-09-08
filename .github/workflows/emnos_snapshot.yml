@@ -70,6 +70,8 @@ jobs:
 
       - name: Data Ingestion
         run: |
+          mkdir -p local_data/private_gpt/qdrant
+          chmod -R 777 local_data
           docker run --rm \
           -e INGEST_FOLDER=./local_data/private_gpt/source_documents/kow \
           -v $PWD/local_data:/opt/emnosapp/private-gpt/local_data \
