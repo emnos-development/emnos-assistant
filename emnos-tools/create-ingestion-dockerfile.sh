@@ -10,6 +10,7 @@ RUN mkdir -p /opt/emnosapp/private-gpt \
 USER emnos
 ENV HOME=/home/emnos
 ENV PATH="/home/emnos/.local/bin:$PATH"
+ENV INGEST_FOLDER=./local_data/private_gpt/source_documents/kow
 WORKDIR /opt/emnosapp/private-gpt
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
