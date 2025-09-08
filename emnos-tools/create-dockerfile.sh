@@ -20,7 +20,7 @@ RUN poetry install --extras "llms-gemini embeddings-gemini ui vector-stores-qdra
     && pip install  --no-cache-dir -e .
 
 EXPOSE 8080
-ENTRYPOINT ["bash", "-c", "GPT_PROFILES=gemini make run"]
+ENTRYPOINT ["bash", "-c", "PGPT_PROFILES=gemini make run"]
 
 EOF
 
