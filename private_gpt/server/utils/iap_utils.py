@@ -1,6 +1,7 @@
 import logging
 import requests
 import jwt
+import json
 from fastapi import HTTPException, Request, status
 from google.oauth2 import id_token
 from google.auth.transport import requests as grequests
@@ -40,9 +41,11 @@ class IAPValidator:
             kid = unverified_header["kid"]
             if kid not in kid_to_key:
                 raise HTTPException(status_code=403, detail=f"No matching JWK for kid {kid}")
+            
+            jwk = kid_to_key[kid]
+            logger.info(f"Using JWK: {jwk}")
+            public_key = jwt.algorithms.RSAAlgorithm.from_jwk(json.dumps(jwk))
 
-            # 3. Build public key
-            public_key = jwt.algorithms.RSAAlgorithm.from_jwk(kid_to_key[kid])
             # 4. Verify the JWT
             jwt.decode(
                 iap_jwt,
