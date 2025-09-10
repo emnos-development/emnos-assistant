@@ -60,6 +60,23 @@ class AuthSettings(BaseModel):
         "this value should be the whole 'Authorization' header that is expected"
     )
 
+class IapSettings(BaseModel):
+    """IAP configuration.
+
+    This configuration is used to control the IAP authentication.
+    """
+
+    enabled: bool = Field(
+        description="Flag indicating if IAP authentication is enabled or not.",
+        default=False,
+    )
+    audience: str = Field(
+        description="The audience to be used for IAP authentication. "
+        "This value is usually the Client ID of the IAP-secured resource. "
+        "It must be set if IAP authentication is enabled.",
+        default=None,
+    )
+
 
 class IngestionSettings(BaseModel):
     """Ingestion configuration.
@@ -93,6 +110,10 @@ class ServerSettings(BaseModel):
     auth: AuthSettings = Field(
         description="Authentication configuration",
         default_factory=lambda: AuthSettings(enabled=False, secret="secret-key"),
+    )
+    iap: IapSettings = Field(
+        description="IAP configuration",
+        default_factory=lambda: IapSettings(enabled=False, audience=None),
     )
 
 
