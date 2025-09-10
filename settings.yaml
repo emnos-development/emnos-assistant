@@ -6,14 +6,14 @@ server:
   port: ${APP_PORT:8001}
   cors:
     enabled: true
-    allow_origins: [
-      "https://sports-dev.emnos.com", 
-      "https://sports-stage.emnos.com", 
-      "https://sports.emnos.com", 
-      "https://pingodoce-stage.emnos.com", 
-      "https://pingodoce.emnos.com", 
-      "http://localhost:5173"
-    ]
+    allow_origins: ${CORS_ALLOW_ORIGINS:"http://localhost:5173"}
+    #   "https://sports-dev.emnos.com", 
+    #   "https://sports-stage.emnos.com", 
+    #   "https://sports.emnos.com", 
+    #   "https://pingodoce-stage.emnos.com", 
+    #   "https://pingodoce.emnos.com", 
+    #   "http://localhost:5173"
+    # ]
     allow_methods: ["OPTIONS", "GET", "POST"]
     allow_headers: ["*"]
     allow_credentials: true
@@ -23,6 +23,9 @@ server:
     # 'secret' is the username and 'key' is the password for basic auth by default
     # If the auth is enabled, this value must be set in the "Authorization" header of the request.
     secret: "Basic c2VjcmV0OmtleQ=="
+  iap:
+    enabled: true
+    audience: ${GOOGLE_IAP_AUDIENCE:}
 
 data:
   local_ingestion:

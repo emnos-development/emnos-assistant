@@ -16,6 +16,7 @@ from private_gpt.server.embeddings.embeddings_router import embeddings_router
 from private_gpt.server.health.health_router import health_router
 from private_gpt.server.ingest.ingest_router import ingest_router
 from private_gpt.server.recipes.summarize.summarize_router import summarize_router
+from private_gpt.server.utils.iap_utils import IAPValidator
 from private_gpt.settings.settings import Settings
 
 logger = logging.getLogger(__name__)
@@ -65,6 +66,15 @@ def create_app(root_injector: Injector) -> FastAPI:
             allow_headers=settings.server.cors.allow_headers,
         )
     logger.info(f"CORS config in use: {settings.server.cors.dict()}")
+
+    if settings.server.iap.enabled:
+        logger.info("IAP validation enabled")
+        iap_validator = IAPValidator(settings.server.iap.audience)
+
+        @app.middleware("http")
+        async def iap_auth_middleware(request: Request, call_next):
+            iap_validator.validate_request(request)
+            return await call_next(request)
 
     if settings.ui.enabled:
         logger.debug("Importing the UI module")
