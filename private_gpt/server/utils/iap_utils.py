@@ -8,6 +8,10 @@ from google.auth.transport import requests as grequests
 
 logger = logging.getLogger(__name__)
 IAP_JWK_URL = "https://www.gstatic.com/iap/verify/public_key-jwk"
+alg_map = {
+    "ES256": jwt.algorithms.ECAlgorithm.from_jwk,
+    "RS256": jwt.algorithms.RSAAlgorithm.from_jwk,
+}
 
 class IAPValidator:
     def __init__(self, audience: str):
@@ -43,14 +47,19 @@ class IAPValidator:
                 raise HTTPException(status_code=403, detail=f"No matching JWK for kid {kid}")
             
             jwk = kid_to_key[kid]
-            logger.info(f"Using JWK: {jwk}")
-            public_key = jwt.algorithms.RSAAlgorithm.from_jwk(json.dumps(jwk))
+            logger.info(f"Using JWK kid={kid} alg={jwk.get('alg')} kty={jwk.get('kty')}")
+            alg = jwk.get("alg")
+            if alg not in alg_map:
+                raise HTTPException(status_code=403, detail=f"Unsupported alg: {alg}")
+
+            # Build public key
+            public_key = alg_map[alg](json.dumps(jwk))
 
             # 4. Verify the JWT
             jwt.decode(
                 iap_jwt,
                 key=public_key,
-                algorithms=["ES256", "RS256"],  # IAP uses RS256
+                algorithms=[alg],
                 audience=self.audience,
                 issuer="https://cloud.google.com/iap"
             )
