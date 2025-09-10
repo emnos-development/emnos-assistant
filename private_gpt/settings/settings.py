@@ -42,7 +42,8 @@ class CorsSettings(BaseModel):
         description="A list of HTTP methods that should be allowed for cross-origin requests.",
         default=[
             "GET",
-            "POST"
+            "POST",
+            "OPTIONS",
         ],
     )
     allow_headers: list[str] = Field(
