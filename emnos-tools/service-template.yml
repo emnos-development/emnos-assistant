@@ -56,8 +56,6 @@ spec:
               value: "${PGPT_PROFILES}"
             - name: GPT_GEMINI_KEY
               value: "${GPT_GEMINI_KEY}"
-            - name: CORS_ALLOW_ORIGINS
-              value: "${CORS_ALLOW_ORIGINS}"
             - name: GOOGLE_IAP_AUDIENCE
               value: "${GOOGLE_IAP_AUDIENCE}"
 
