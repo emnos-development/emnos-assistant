@@ -6,7 +6,7 @@ server:
   port: ${APP_PORT:8001}
   cors:
     enabled: true
-    allow_origins: ["${CORS_ALLOW_ORIGINS:'*'}"]
+    allow_origins: ${CORS_ALLOW_ORIGINS:"*"}
     allow_methods: ["OPTIONS", "GET", "POST"]
     allow_headers: ["*"]
     allow_credentials: true
