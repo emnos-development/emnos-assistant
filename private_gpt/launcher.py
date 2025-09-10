@@ -2,7 +2,10 @@
 
 import logging
 
+from flask import app
+
 from fastapi import Depends, FastAPI, Request
+from fastapi.routing import APIRoute
 from fastapi.middleware.cors import CORSMiddleware
 from injector import Injector
 from llama_index.core.callbacks import CallbackManager
@@ -31,11 +34,13 @@ def create_app(root_injector: Injector) -> FastAPI:
 
     @app.on_event("startup")
     async def list_routes():
-        print("🚀 Mounted routes:")
+        logger.info("🚀 Mounted routes:")
         for route in app.routes:
-            print(f"{route.path} → {route.methods}")
-            logger.info(f"Mounted route: {route.path} → {route.methods}")
-        print("⭐️ PrivateGPT is ready to use!")
+            if isinstance(route, APIRoute):
+                methods = ",".join(route.methods)
+                logger.info(f"{route.path} → {methods}")
+            else:
+                logger.info(f"{route.path} → (mounted sub-app: {type(route).__name__})")
 
 
     app.include_router(completions_router)
