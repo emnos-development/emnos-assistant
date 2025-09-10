@@ -22,12 +22,21 @@ logger = logging.getLogger(__name__)
 
 
 def create_app(root_injector: Injector) -> FastAPI:
-
+    
     # Start the API
     async def bind_injector_to_request(request: Request) -> None:
         request.state.injector = root_injector
 
     app = FastAPI(dependencies=[Depends(bind_injector_to_request)])
+
+    @app.on_event("startup")
+    async def list_routes():
+        print("🚀 Mounted routes:")
+        for route in app.routes:
+            print(f"{route.path} → {route.methods}")
+            logger.info(f"Mounted route: {route.path} → {route.methods}")
+        print("⭐️ PrivateGPT is ready to use!")
+
 
     app.include_router(completions_router)
     app.include_router(chat_router)
@@ -44,7 +53,7 @@ def create_app(root_injector: Injector) -> FastAPI:
 
     settings = root_injector.get(Settings)
     if settings.server.cors.enabled:
-        logger.debug("Setting up CORS middleware")
+        logger.info("Setting up CORS middleware")
         app.add_middleware(
             CORSMiddleware,
             allow_credentials=settings.server.cors.allow_credentials,
