@@ -64,6 +64,7 @@ def create_app(root_injector: Injector) -> FastAPI:
             allow_methods=settings.server.cors.allow_methods,
             allow_headers=settings.server.cors.allow_headers,
         )
+    logger.info(f"CORS config in use: {settings.server.cors.dict()}")
 
     if settings.ui.enabled:
         logger.debug("Importing the UI module")
