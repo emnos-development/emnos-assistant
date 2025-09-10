@@ -1,9 +1,6 @@
 """FastAPI app creation, logger configuration and main API routes."""
 
 import logging
-
-from flask import app
-
 from fastapi import Depends, FastAPI, Request
 from fastapi.routing import APIRoute
 from fastapi.middleware.cors import CORSMiddleware
