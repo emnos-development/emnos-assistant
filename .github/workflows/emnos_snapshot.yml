@@ -147,8 +147,8 @@ jobs:
           export GPT_GEMINI_KEY=${{ secrets.GPT_GEMINI_KEY }}
           export KO_API_KEY=${{ secrets.KO_API_KEY }}
           export INGRESS_SETTINGS=${{ vars.INGRESS_SETTINGS }}
-          export CORS_ALLOW_ORIGINS=${{ vars.CORS_ALLOW_ORIGINS }}
-          export GOOGLE_IAP_AUDIENCE=${{ vars.GOOGLE_IAP_AUDIENCE }}
+          export CORS_ALLOW_ORIGINS=${{ fromJson(env.ENVIRONMENT_CONFIG).CORS_ALLOW_ORIGINS }}
+          export GOOGLE_IAP_AUDIENCE=${{ fromJson(env.ENVIRONMENT_CONFIG).GOOGLE_IAP_AUDIENCE }}
 
           echo "##### CONTAINER variables export"
           export IMAGE_NAME=${{ vars.SERVICE_NAME }}
