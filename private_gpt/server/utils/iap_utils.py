@@ -27,7 +27,8 @@ class IAPValidator:
             id_token.verify_token(
                 iap_jwt,
                 self.request_adapter,
-                audience=self.audience
+                audience=self.audience,
+                certs_url="https://www.gstatic.com/iap/verify/public_key-jwk"
             )
             logger.info("IAP token validated successfully")
             return True  # valid
