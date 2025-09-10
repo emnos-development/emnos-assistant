@@ -36,7 +36,7 @@ class IAPValidator:
              # 1. Fetch Google's IAP JWKS
             jwks = requests.get(IAP_JWK_URL).json()
             kid_to_key = {key["kid"]: key for key in jwks["keys"]}
-            unverified_header = id_token.get_unverified_header(iap_jwt)
+            unverified_header = jwt.get_unverified_header(iap_jwt)
             kid = unverified_header["kid"]
             if kid not in kid_to_key:
                 raise HTTPException(status_code=403, detail=f"No matching JWK for kid {kid}")
