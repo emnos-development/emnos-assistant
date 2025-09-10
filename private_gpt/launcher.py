@@ -1,6 +1,7 @@
 """FastAPI app creation, logger configuration and main API routes."""
 
 import logging
+from urllib import request
 from fastapi import Depends, FastAPI, Request
 from fastapi.routing import APIRoute
 from fastapi.middleware.cors import CORSMiddleware
@@ -73,6 +74,9 @@ def create_app(root_injector: Injector) -> FastAPI:
 
         @app.middleware("http")
         async def iap_auth_middleware(request: Request, call_next):
+                # Don’t enforce IAP on OPTIONS (CORS preflight) or public endpoints
+            if request.method == "OPTIONS" or request.url.path in ["/health"]:
+                return await call_next(request)
             iap_validator.validate_request(request)
             return await call_next(request)
 
