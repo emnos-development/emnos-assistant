@@ -24,7 +24,15 @@ class CorsSettings(BaseModel):
     )
     allow_origins: list[str] = Field(
         description="A list of origins that should be permitted to make cross-origin requests.",
-        default=[],
+        default=[
+            "https://sports-dev.emnos.com", 
+            "https://sports-stage.emnos.com",
+            "https://sports.emnos.com",
+            "https://pingodoce-stage.emnos.com",
+            "https://pingodoce.emnos.com",
+            "http://localhost",
+            "http://localhost:5173",
+        ],
     )
     allow_origin_regex: list[str] = Field(
         description="A regex string to match against origins that should be permitted to make cross-origin requests.",
@@ -34,6 +42,7 @@ class CorsSettings(BaseModel):
         description="A list of HTTP methods that should be allowed for cross-origin requests.",
         default=[
             "GET",
+            "POST"
         ],
     )
     allow_headers: list[str] = Field(
