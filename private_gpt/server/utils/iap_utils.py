@@ -24,15 +24,13 @@ class IAPValidator:
             )
 
         try:
-            decoded = id_token.verify_token(
+            id_token.verify_token(
                 iap_jwt,
                 self.request_adapter,
                 audience=self.audience
             )
-            # Optional: log or return user info
-            email = decoded.get("email")
-            logger.info(f"IAP validated for {email}")
-            return decoded
+            logger.info("IAP token validated successfully")
+            return True  # valid
         except Exception as e:
             logger.error(f"Invalid IAP token: {str(e)}")
             raise HTTPException(
