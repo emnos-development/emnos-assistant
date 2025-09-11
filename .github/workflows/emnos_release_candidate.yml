@@ -49,11 +49,11 @@ jobs:
       fail-fast: false
       matrix:
         INDUSTRY: [FOOD]
-        ENVIRONMENT: [PROD]
+        ENVIRONMENT: [STAGE]
         CUSTOMER: [-PDOPT]
         include:
           - INDUSTRY: SPORT
-            ENVIRONMENT: PROD
+            ENVIRONMENT: STAGE
     environment: ${{ matrix.INDUSTRY }}-${{ matrix.ENVIRONMENT }}${{ matrix.CUSTOMER }}
     env:
       ENVIRONMENT_CONFIG: ${{ vars.ENVIRONMENT_CONFIG }}
