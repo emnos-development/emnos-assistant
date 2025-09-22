@@ -95,9 +95,20 @@ class IngestionHelper:
         documents = reader_cls().load_data(file_data)
 
         # Sanitize NUL bytes in text which can't be stored in Postgres
-        for i in range(len(documents)):
-            documents[i].text = documents[i].text.replace("\u0000", "")
+        cleaned = []
+        for doc in documents:
+            cleaned_text = doc.text.replace("\u0000", "")
+            new_doc = Document(
+                text=cleaned_text,
+                metadata=dict(doc.metadata),  # copy metadata
+                excluded_embed_metadata_keys=getattr(doc, "excluded_embed_metadata_keys", None),
+                excluded_llm_metadata_keys=getattr(doc, "excluded_llm_metadata_keys", None),
+                relationships=getattr(doc, "relationships", None),
+                id_=getattr(doc, "id_", None),  # preserve ID if present
+            )
+            cleaned.append(new_doc)
 
+        documents = cleaned
         return documents
 
     @staticmethod
