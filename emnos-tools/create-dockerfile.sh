@@ -20,8 +20,7 @@ COPY --chown=emnos:emnos ./local_data/private_gpt/qdrant /opt/emnosapp/private-g
 
 RUN curl -sSL https://install.python-poetry.org | python3 - \
     && poetry install --extras "llms-gemini embeddings-gemini ui vector-stores-qdrant" --no-interaction --no-ansi \
-    && pip install -e .  \
-    && poetry run pip install PyJWT
+    && pip install -e .
 
 EXPOSE 8080
 ENTRYPOINT ["bash", "-c", "PGPT_PROFILES=gemini make run"]
