@@ -12,6 +12,8 @@ All emnos Customer insights are use case specific and should be used to answer t
 2. [Origin of customers](https://help.emnos.com/help/origin-of-customers "Origin of customers") = Understand how much of your customer base is renewed and where customers come from and go to.
 3. [Cross-purchase](https://help.emnos.com/help/cross-purchase "Cross-purchase") = Identify what portion of your customers are cross-purchasing 3 product groups, 2 product groups, or are exclusive to 1 product group
 4. [Basket content](https://help.emnos.com/help/basket-content "Basket content") = Know how many units of your product are bought in one single basket, to optimize promo offers and packaging format
+5. Sales tree = Analyze product performance by identifying key sales drivers and benchmarking across products.
+6. Basket affinity = Discover which products are often bought in the same basket to identify cross-selling opportunities.
 
 ## How to access Customer insights
 
